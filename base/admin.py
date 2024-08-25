@@ -5,3 +5,4 @@ from .models import *
 
 admin.site.register(Room)
 admin.site.register(UserType)
+admin.site.register(Profile)
