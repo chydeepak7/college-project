@@ -2,24 +2,37 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
+# Assuming you have a Profile model for additional user information
+from .models import *
 
 class UserSerializer(serializers.ModelSerializer):
-    # name = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id','username','email']
+        fields = ['id', 'username', 'email']
 
-    # def get_name(self, obj):
-    #     name = obj.name
-    #     if name == '':
-    #         name = obj.email
-    #     return name
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['id','user','name','phone_number', 'role']
 
 class UserSerializerWithToken(UserSerializer):
     token = serializers.SerializerMethodField(read_only=True)
+    profile = ProfileSerializer(read_only=True)  # Nested serializer for Profile
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email','token']
+        fields = ['id', 'username', 'email', 'first_name', 'token', 'profile']
+
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
+
+
+class MessageSerializer(serializers.ModelSerializer):
+
+    receiver_profile = ProfileSerializer(read_only=True)
+    sender_profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = ['id','user','sender','sender_profile','receiver','receiver_profile','message','is_read','date']
