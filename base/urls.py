@@ -8,9 +8,10 @@ from .views import *
 
 urlpatterns = [
     # Users
-    path('users/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('users/profile/', getUserProfile, name='users'),
-    path('users/register/', registerUser, name='registerUsers'),
+    path('user/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('user/token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('user/profile/', getUserProfile, name='users'),
+    path('user/register/', registerUser, name='registerUsers'),
 
     # Chat Messages
     path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),
