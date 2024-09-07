@@ -10,11 +10,20 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email']
 
+# class ProfileSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Profile
+#         fields = ['id','user','name','phone_number', 'role']
+
+
 class ProfileSerializer(serializers.ModelSerializer):
+    userType = serializers.CharField(source='userType.name', read_only=True)  # Serialize the name of the userType
+
     class Meta:
         model = Profile
-        fields = ['id','user','name','phone_number', 'role']
+        fields = ['id', 'user', 'phone_number', 'userType']
 
+        
 class UserSerializerWithToken(UserSerializer):
     token = serializers.SerializerMethodField(read_only=True)
     profile = ProfileSerializer(read_only=True)  # Nested serializer for Profile

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view ,permission_classes
 from rest_framework.response import Response
 from .serializers import *
 from django.contrib.auth.models import User
@@ -29,10 +29,37 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getUserProfile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
+
+
+# @api_view(['POST'])
+# def registerUser(request):
+#     data = request.data
+
+#     # Check if passwords match
+#     if data['password'] != data['confirm_password']:
+#         return Response({'detail': 'Passwords do not match'}, status=400)
+
+#     user = User.objects.create(
+#         full_name=data['first_name'],
+#         email=data['email'],
+#         username=data['username'],
+#         password=data['password'],
+#     )
+
+#     # Create a profile for additional fields
+#     Profile.objects.create(
+#         user=user,
+#         phone_number=data['phone_number'],
+#         role=data['role'],  # Landlord or Tenant
+#     )
+
+#     serializer = UserSerializerWithToken(user, many=False)
+#     return Response(serializer.data)
 
 
 @api_view(['POST'])
@@ -43,8 +70,14 @@ def registerUser(request):
     if data['password'] != data['confirm_password']:
         return Response({'detail': 'Passwords do not match'}, status=400)
 
-    user = User.objects.create(
-        first_name=data['first_name'],
+    try:
+        userType = UserType.objects.get(name=data['role'])
+    except UserType.DoesNotExist:
+        return Response({'detail': 'Invalid role'}, status=400)
+
+    # Create the user
+    user = User.objects.create_user(
+        first_name=data['full_name'],
         email=data['email'],
         username=data['username'],
         password=data['password'],
@@ -54,12 +87,11 @@ def registerUser(request):
     Profile.objects.create(
         user=user,
         phone_number=data['phone_number'],
-        role=data['role'],  # Landlord or Tenant
+        userType=userType,
     )
 
     serializer = UserSerializerWithToken(user, many=False)
     return Response(serializer.data)
-
 
 
 class MyInbox(generics.ListAPIView):
@@ -87,6 +119,8 @@ class MyInbox(generics.ListAPIView):
         ).order_by("-id")
 
         return messages
+
+
 
 class GetMessages(generics.ListAPIView):
     serializer_class = ChatMessage
