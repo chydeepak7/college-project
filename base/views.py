@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from django.db.models import Subquery, OuterRef , Q
 from rest_framework import generics,status
+from .models import *
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -29,7 +30,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def getUserProfile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
@@ -67,27 +68,28 @@ def registerUser(request):
     data = request.data
 
     # Check if passwords match
-    if data['password'] != data['confirm_password']:
-        return Response({'detail': 'Passwords do not match'}, status=400)
+    # if data['password'] != data['confirm_password']:
+    #     return Response({'detail': 'Passwords do not match'}, status=400)
 
-    try:
-        userType = UserType.objects.get(name=data['role'])
-    except UserType.DoesNotExist:
-        return Response({'detail': 'Invalid role'}, status=400)
+    # try:
+    #     userType = UserType.objects.get(name=data['role'])
+    # except UserType.DoesNotExist:
+    #     return Response({'detail': 'Invalid role'}, status=400)
 
     # Create the user
     user = User.objects.create_user(
-        first_name=data['full_name'],
+        first_name=data['name'],
         email=data['email'],
         username=data['username'],
         password=data['password'],
     )
 
+    dataInstance = UserType.objects.get(name=data['userType'])
     # Create a profile for additional fields
-    Profile.objects.create(
+    profile = Profile.objects.create(
         user=user,
         phone_number=data['phone_number'],
-        userType=userType,
+        userType=dataInstance,
     )
 
     serializer = UserSerializerWithToken(user, many=False)

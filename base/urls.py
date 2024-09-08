@@ -12,6 +12,7 @@ urlpatterns = [
     path('user/token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('user/profile/', getUserProfile, name='users'),
     path('user/register/', registerUser, name='registerUsers'),
+    path('user/login/', MyTokenObtainPairView.as_view(), name='login'),
 
     # Chat Messages
     path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),
