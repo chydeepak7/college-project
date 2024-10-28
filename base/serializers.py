@@ -27,7 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'phone_number', 'userType']
+        fields = ['id', 'user', 'phone_number', 'userType' ,'is_verified']
 
         
 class UserSerializerWithToken(UserSerializer):

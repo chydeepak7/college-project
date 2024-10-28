@@ -33,8 +33,9 @@ class UserType(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     phone_number = models.CharField(max_length=15,default=None)
-    userType = models.ForeignKey(UserType, on_delete=models.CASCADE, default=None) # 'Landlord' or 'Tenant' 
-
+    userType = models.ForeignKey(UserType, on_delete=models.CASCADE, default=None) # 'Landlord' or 'Tenant'
+    is_verified = models.BooleanField(default=False)
+    
     def __str__(self):
         return self.user.username
     
