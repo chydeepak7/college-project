@@ -27,7 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'phone_number', 'userType']
+        fields = ['user', 'phone_number', 'userType']
 
         
 class UserSerializerWithToken(UserSerializer):
@@ -51,3 +51,9 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatMessage
         fields = ['id','user','sender','sender_profile','receiver','receiver_profile','message','is_read','date']
+
+
+class RegisterDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RegistrationDetails
+        fields = ['id','user', 'name', 'image']
