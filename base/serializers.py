@@ -5,12 +5,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # Assuming you have a Profile model for additional user information
 from .models import *
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
-
 
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,9 +27,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'phone_number', 'userType']
+        fields = ['id', 'user', 'phone_number', 'userType']
 
-
+        
 class UserSerializerWithToken(UserSerializer):
     token = serializers.SerializerMethodField(read_only=True)
     profile = ProfileSerializer(read_only=True)  # Nested serializer for Profile
@@ -46,16 +44,10 @@ class UserSerializerWithToken(UserSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+
     receiver_profile = ProfileSerializer(read_only=True)
     sender_profile = ProfileSerializer(read_only=True)
 
     class Meta:
         model = ChatMessage
-        fields = ['id', 'user', 'sender', 'sender_profile', 'receiver', 'receiver_profile', 'message', 'is_read',
-                  'date']
-
-
-class RegisterDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RegistrationDetails
-        fields = ['id','user', 'name', 'image']
+        fields = ['id','user','sender','sender_profile','receiver','receiver_profile','message','is_read','date']
