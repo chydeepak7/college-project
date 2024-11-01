@@ -18,6 +18,7 @@ urlpatterns = [
 
     # Registration Details
     path('registrationdetails/', getRegistrationDetails, name='registrationDetails'),
+    path('user/verify/', verify_user, name='verifyUser'),
 
     # Chat Messages
     path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),

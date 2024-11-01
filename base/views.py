@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.decorators import api_view ,permission_classes
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import api_view ,permission_classes,parser_classes
 from rest_framework.response import Response
 from .serializers import *
 from django.contrib.auth.models import User
@@ -144,3 +145,39 @@ class SearchUser(generics.ListAPIView):
         
         serializer = self.get_serializer(users,many=True)
         return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])  # Allow parsing of file data
+def verify_user(request):
+    user = request.user  # Get the currently logged-in user
+    print(user)
+
+
+    # Check if user already has registration details
+    if RegistrationDetails.objects.filter(user=user).exists():
+        print('haha')
+        return Response({"detail": "User already has registration details."}, status=status.HTTP_400_BAD_REQUEST)
+
+    data = {
+        'name': request.data.get('name'),
+        'image': request.data.get('image'),
+        'image1': request.data.get('image1'),
+        'image2': request.data.get('image2'),
+        'image3': request.data.get('image3'),
+        'user': user.id  # Add the user ID
+    }
+    print("Incoming request data:", data)
+    # Initialize the serializer with data and context
+    serializer = RegisterVerifySerializer(data=data)
+
+    # Validate and save if data is valid
+    if serializer.is_valid():
+        serializer.save(user=user)  # Automatically associate the `user` field
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # Log the serializer errors for debugging
+    print(serializer.errors)  # Add this line for debugging
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
