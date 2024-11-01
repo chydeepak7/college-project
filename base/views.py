@@ -41,11 +41,15 @@ def getUserProfile(request):
 def getUserType(request):
     user = request.user
     profile = Profile.objects.get(user=user)
-    serializer = UserTypeSerializer(profile.userType,many=False)
-    # serializer = UserSerializer(user, many=False)
-    # return Response(serializer.data)
-    return Response(serializer.data)
+    serializer = ProfileSerializer(profile,many=False)
+    return Response(serializer.data['userType'])
 
+@api_view(['GET'])
+def getRegistrationDetails(request):
+    user = request.user
+    details = RegistrationDetails.objects.get(user=user)
+    serializer = RegisterDetailsSerializer(details,many=False)
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def registerUser(request):

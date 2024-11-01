@@ -15,6 +15,10 @@ urlpatterns = [
     path('user/register/', registerUser, name='registerUsers'),
     path('user/login/', MyTokenObtainPairView.as_view(), name='login'),
 
+
+    # Registration Details
+    path('registrationdetails/', getRegistrationDetails, name='registrationDetails'),
+
     # Chat Messages
     path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),
     path('getMessages/<sender_id>/<receiver_id>/', GetMessages.as_view(), name='messages'),
