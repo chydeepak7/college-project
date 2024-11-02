@@ -28,5 +28,9 @@ urlpatterns = [
     # Get Profile
     path('profile/<int:pk>/', ProfileDetail.as_view(), name='profileDetail'),
     path('search/<username>/', SearchUser.as_view(), name='searchUser'),
+
+    # Room Details
+    path('roomdetails/', room_details, name='roomDetails'),
+
 ]
 

@@ -181,3 +181,10 @@ def verify_user(request):
     print(serializer.errors)  # Add this line for debugging
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+def room_details(request):
+    rooms = RoomDetails.objects.all()
+    serializer = RoomDetailsSerializer(rooms, many=True)
+    return Response(serializer.data)
+

@@ -75,3 +75,9 @@ class RegisterVerifySerializer(serializers.ModelSerializer):
             registration_detail = RegistrationDetails.objects.create(user=user, **validated_data)
             return registration_detail
 
+
+
+class RoomDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomDetails
+        fields = '__all__'
