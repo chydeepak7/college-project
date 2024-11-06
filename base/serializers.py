@@ -81,3 +81,24 @@ class RoomDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomDetails
         fields = '__all__'
+
+
+
+
+class AddRoom(serializers.ModelSerializer):
+    # Explicitly declare image fields to handle file uploads
+    image = serializers.ImageField(required=False,allow_null=True)
+    image1 = serializers.ImageField(required=False,allow_null=True)
+    image2 = serializers.ImageField(required=False,allow_null=True)
+    image3 = serializers.ImageField(required=False,allow_null=True)
+
+    class Meta:
+        model = RoomDetails
+        fields = '__all__'
+        # read_only_fields = ['user']  #
+        def create(self, validated_data):
+            user = validated_data.pop('user')  # Extract the user from validated data
+            room_detail = RoomDetails.objects.create(user=user, **validated_data)
+            return room_detail
+
+

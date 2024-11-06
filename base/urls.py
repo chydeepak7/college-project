@@ -31,6 +31,8 @@ urlpatterns = [
 
     # Room Details
     path('roomdetails/', room_details, name='roomDetails'),
+    path('roomdetail/', room_detail, name='roomDetail'),
+    path('addrooms/', add_rooms, name='addRoom'),
 
 ]
 

@@ -188,3 +188,39 @@ def room_details(request):
     serializer = RoomDetailsSerializer(rooms, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def room_detail(request):
+    user = request.user
+    rooms = RoomDetails.objects.filter(user=user)
+    serializer = RoomDetailsSerializer(rooms, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def add_rooms(request):
+    user = request.user
+    data = {
+        'number_of_rooms': float(request.data.get('number_of_rooms')),
+        'rent': float(request.data.get('rent')),
+        'bathroom': request.data.get('bathroom'),
+        'address': request.data.get('address'),
+        'latitude': float(request.data.get('longitude')),
+        'longitude': float(request.data.get('latitude')),
+        'image': request.data.get('image'),
+        'image1': request.data.get('image1'),
+        'image2': request.data.get('image2'),
+        'image3': request.data.get('image3'),
+        'user': user.id  # Add the user ID
+    }
+    serializer = RoomDetailsSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save(user=user)  # Automatically associate the `user` field
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # Log the serializer errors for debugging
+    print(serializer.errors)  # Add this line for debugging
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
