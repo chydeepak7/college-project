@@ -5,10 +5,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # Assuming you have a Profile model for additional user information
 from .models import *
 
-class UserSerializer(serializers.ModelSerializer):
+
+class ProfileSerializer(serializers.ModelSerializer):
+    userType = serializers.CharField(source='userType.name', read_only=True)  # Serialize the name of the userType
+
     class Meta:
-        model = User
-        fields = ['id', 'username', 'email']
+        model = Profile
+        fields = ['user', 'phone_number', 'userType', 'is_verified']
+
 
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,25 +26,15 @@ class UserTypeSerializer(serializers.ModelSerializer):
 #         fields = ['id','user','name','phone_number', 'role']
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    userType = serializers.CharField(source='userType.name', read_only=True)  # Serialize the name of the userType
 
-    class Meta:
-        model = Profile
-        fields = ['user', 'phone_number', 'userType']
 
-        
-class UserSerializerWithToken(UserSerializer):
-    token = serializers.SerializerMethodField(read_only=True)
-    profile = ProfileSerializer(read_only=True)  # Nested serializer for Profile
+# class ProfileListSerializer(serializers.ModelSerializer):
+#     profile = ProfileSerializer()
+#     class Meta:
+#         model =
 
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'first_name', 'token', 'profile']
 
-    def get_token(self, obj):
-        token = RefreshToken.for_user(obj)
-        return str(token.access_token)
+
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -56,7 +50,7 @@ class MessageSerializer(serializers.ModelSerializer):
 class RegisterDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegistrationDetails
-        fields = ['id','user', 'name', 'image']
+        fields = '__all__'
 
 
 class RegisterVerifySerializer(serializers.ModelSerializer):
@@ -102,3 +96,22 @@ class AddRoom(serializers.ModelSerializer):
             return room_detail
 
 
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+    registerVerify = RegisterDetailsSerializer(source='registrationdetails', read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'profile', 'registerVerify']
+
+
+class UserSerializerWithToken(UserSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+    profile = ProfileSerializer(read_only=True)  # Nested serializer for Profile
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'token', 'profile']
+
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)

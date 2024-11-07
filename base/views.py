@@ -46,6 +46,13 @@ def getUserType(request):
     return Response(serializer.data['userType'])
 
 @api_view(['GET'])
+def userList(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users,many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
 def getRegistrationDetails(request):
     user = request.user
     details = RegistrationDetails.objects.get(user=user)

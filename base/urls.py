@@ -13,6 +13,7 @@ urlpatterns = [
     path('user/profile/', getUserProfile, name='users'),
     path('user/type/', getUserType, name='usersProfile'),
     path('user/register/', registerUser, name='registerUsers'),
+    path('user/list/', userList, name='userList'),
     path('user/login/', MyTokenObtainPairView.as_view(), name='login'),
 
 
