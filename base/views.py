@@ -231,3 +231,21 @@ def add_rooms(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+@api_view(['POST'])
+def toggle_verify_user(request, user_id):
+    try:
+        # Retrieve the Profile instance related to the User
+        profile = Profile.objects.get(user__id=user_id)
+        # Toggle the `is_verified` status
+        profile.is_verified = not profile.is_verified
+        profile.save()
+        # Return the updated profile details
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Profile.DoesNotExist:
+        return Response({"error": "User profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
