@@ -111,14 +111,14 @@ class MyInbox(generics.ListAPIView):
 
 
 class GetMessages(generics.ListAPIView):
-    serializer_class = ChatMessage
+    serializer_class = MessageSerializer
 
     def get_queryset(self):
-        sender_id = self.kwargs[sender_id]
-        receiver_id = self.kwargs[receiver_id]
+        sender_id = self.kwargs['sender_id']
+        receiver_id = self.kwargs['receiver_id']
 
         messages = ChatMessage.objects.filter(
-           Q(sender_id=sender_id, receiver_id=receiver_id) |
+           Q(sender_id=sender_id, receiver_id=receiver_id) or
             Q(sender_id=receiver_id, receiver_id=sender_id)
         ).order_by("id")
         return messages
