@@ -73,6 +73,7 @@ def registerUser(request):
 
     dataInstance = UserType.objects.get(name=data['userType'])
     # Create a profile for additional fields
+    print(user,data['phone_number'], dataInstance)
     profile = Profile.objects.create(
         user=user,
         phone_number=data['phone_number'],
@@ -168,11 +169,19 @@ def verify_user(request):
         return Response({"detail": "User already has registration details."}, status=status.HTTP_400_BAD_REQUEST)
 
     data = {
-        'name': request.data.get('name'),
-        'image': request.data.get('image'),
-        'image1': request.data.get('image1'),
-        'image2': request.data.get('image2'),
-        'image3': request.data.get('image3'),
+        'name': request.data.get('fullName'),
+        'date_of_birth': request.data.get('dateOfBirth'),
+        'gender': request.data.get('gender'),
+        'father_name': request.data.get('fatherName'),
+        'marital_status': request.data.get('maritalStatus'),
+        'spouse_name': request.data.get('spouseName'),
+        'occupation': request.data.get('occupation'),
+        'phone_number': request.data.get('phoneNumber'),
+        'email': request.data.get('email'),
+        'permanent_address': request.data.get('permanentAddress'),
+        'passportPhoto': request.data.get('passportPhoto'),
+        'citizenshipFront': request.data.get('citizenshipFront'),
+        'citizenshipBack': request.data.get('citizenshipBack'),
         'user': user.id  # Add the user ID
     }
     print("Incoming request data:", data)
