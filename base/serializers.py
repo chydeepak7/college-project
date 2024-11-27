@@ -45,7 +45,13 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatMessage
         fields = ['id','user','sender','sender_profile','receiver','receiver_profile','message','is_read','date']
-
+        # extra_kwargs = {
+        #     'user': {'read_only': True},  # Set user to read-only if it's derived from sender
+        #     'sender': {'write_only': True},
+        #     'receiver': {'write_only': True},
+        #     'message': {'write_only': True},
+        #     'is_read': {'default': False},  # Defaults to False if not provided
+        # }
 
 class RegisterDetailsSerializer(serializers.ModelSerializer):
     class Meta:
