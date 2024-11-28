@@ -27,6 +27,7 @@ urlpatterns = [
 
     # Chat Messages
     path('', include(router.urls)),
+    path('chat-users/', get_chat_users, name='get-chat-users'),
     # path('sendMessages/', SendMessage.as_view(), name='sendMessages'),
     # path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),
     # path('getMessages/<sender_id>/<receiver_id>/', GetMessages.as_view(), name='messages'),

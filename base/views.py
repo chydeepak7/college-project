@@ -262,15 +262,30 @@ def toggle_verify_user(request, user_id):
 class ChatMessageViewSet(viewsets.ModelViewSet):
     queryset = ChatMessage.objects.all()
     serializer_class = ChatMessageSerializer
-    # permission_classes = [IsAuthenticated]  # Ensure that only authenticated users can send messages
+
 
     def perform_create(self, serializer):
-        sender = self.request.user  # The authenticated user is the sender
-        receiver_id = self.request.data.get('receiver')  # Get the receiver ID from the request data
+        sender = self.request.user
+        receiver_id = self.request.data.get('receiver')
         serializer.save(sender=sender, receiver_id=receiver_id)
 
 
 
 
 
+@api_view(['GET'])
+def get_chat_users(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'detail': 'Not authenticated'}, status=401)
 
+    # Get unique users from sent and received messages
+    sent_users = ChatMessage.objects.filter(sender=user).values_list('receiver', flat=True)
+    received_users = ChatMessage.objects.filter(receiver=user).values_list('sender', flat=True)
+    unique_user_ids = set(sent_users).union(set(received_users))
+
+    # Get user details
+    users = User.objects.filter(id__in=unique_user_ids)
+    user_data = [{'id': user.id, 'name': user.username} for user in users]
+
+    return Response(user_data)
