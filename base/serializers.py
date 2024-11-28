@@ -37,21 +37,38 @@ class UserTypeSerializer(serializers.ModelSerializer):
 
 
 
-class MessageSerializer(serializers.ModelSerializer):
+# class MessageSerializer(serializers.ModelSerializer):
+#
+#     receiver_profile = ProfileSerializer(read_only=True)
+#     sender_profile = ProfileSerializer(read_only=True)
+#
+#     class Meta:
+#         model = ChatMessage
+#         fields = ['id','user','sender','sender_profile','receiver','receiver_profile','message','is_read','date']
+#         # extra_kwargs = {
+#         #     'user': {'read_only': True},  # Set user to read-only if it's derived from sender
+#         #     'sender': {'write_only': True},
+#         #     'receiver': {'write_only': True},
+#         #     'message': {'write_only': True},
+#         #     'is_read': {'default': False},  # Defaults to False if not provided
+#         # }
 
-    receiver_profile = ProfileSerializer(read_only=True)
-    sender_profile = ProfileSerializer(read_only=True)
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    sender = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    receiver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = ChatMessage
-        fields = ['id','user','sender','sender_profile','receiver','receiver_profile','message','is_read','date']
-        # extra_kwargs = {
-        #     'user': {'read_only': True},  # Set user to read-only if it's derived from sender
-        #     'sender': {'write_only': True},
-        #     'receiver': {'write_only': True},
-        #     'message': {'write_only': True},
-        #     'is_read': {'default': False},  # Defaults to False if not provided
-        # }
+        fields = '__all__'
+
+
+
+
+
+
+
 
 class RegisterDetailsSerializer(serializers.ModelSerializer):
     class Meta:

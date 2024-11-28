@@ -39,32 +39,23 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-class ChatMessage(models.Model):
-    user= models.ForeignKey(User,on_delete=models.CASCADE,related_name="user")
-    sender=models.ForeignKey(User,on_delete=models.CASCADE,related_name="sender")
-    receiver=models.ForeignKey(User,on_delete=models.CASCADE,related_name="receiver")
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
 
-    message = models.CharField(max_length= 1000)
+class ChatMessage(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    message = models.CharField(max_length=1000)
     is_read = models.BooleanField(default=False)
+    # created_at = models.DateTimeField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['date']
-        verbose_name_plural = "Message"
 
     def __str__(self):
         return f"{self.sender} - {self.receiver}"
-
-    @property
-    def sender_profile(self):
-        sender_profile = Profile.objects.get(user=self.sender)
-        return sender_profile
-
-    @property
-    def receiver_profile(self):
-        receiver_profile = Profile.objects.get(user=self.receiver)
-        return receiver_profile
-
 
 
 class RegistrationDetails(models.Model):

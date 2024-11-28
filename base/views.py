@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view ,permission_classes,parser_classes
 from rest_framework.response import Response
+from rest_framework import viewsets
 from .serializers import *
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
@@ -84,48 +85,48 @@ def registerUser(request):
     return Response(serializer.data)
 
 
-class MyInbox(generics.ListAPIView):
-    serializer_class = MessageSerializer
+# class MyInbox(generics.ListAPIView):
+#     serializer_class = MessageSerializer
+#
+#     def get_queryset(self):
+#         user_id = self.kwargs['user_id']
+#         messages = ChatMessage.objects.filter(
+#             id__in=Subquery(
+#                 User.objects.filter(
+#                     Q(sender__receiver=user_id) | Q(receiver__sender=user_id)
+#                 )
+#                 .distinct()
+#                 .annotate(
+#                     last_message=Subquery(
+#                         ChatMessage.objects.filter(
+#                             Q(sender=OuterRef('id'), receiver=user_id) |
+#                             Q(sender=user_id, receiver=OuterRef('id'))
+#                         ).order_by("-id")[:1].values_list("id", flat=True)
+#                     )
+#                 )
+#                 .values_list("last_message", flat=True)
+#                 .order_by("-id")
+#             )
+#         ).order_by("-id")
+#         return messages
 
-    def get_queryset(self):
-        user_id = self.kwargs['user_id']
-        messages = ChatMessage.objects.filter(
-            id__in=Subquery(
-                User.objects.filter(
-                    Q(sender__receiver=user_id) | Q(receiver__sender=user_id)
-                )
-                .distinct()
-                .annotate(
-                    last_message=Subquery(
-                        ChatMessage.objects.filter(
-                            Q(sender=OuterRef('id'), receiver=user_id) |
-                            Q(sender=user_id, receiver=OuterRef('id'))
-                        ).order_by("-id")[:1].values_list("id", flat=True)
-                    )
-                )
-                .values_list("last_message", flat=True)
-                .order_by("-id")
-            )
-        ).order_by("-id")
-        return messages
 
 
-
-class GetMessages(generics.ListAPIView):
-    serializer_class = MessageSerializer
-
-    def get_queryset(self):
-        sender_id = self.kwargs['sender_id']
-        receiver_id = self.kwargs['receiver_id']
-
-        messages = ChatMessage.objects.filter(
-           Q(sender_id=sender_id, receiver_id=receiver_id) or
-            Q(sender_id=receiver_id, receiver_id=sender_id)
-        ).order_by("id")
-        return messages
-    
-class SendMessage(generics.CreateAPIView):
-    serializer_class = MessageSerializer
+# class GetMessages(generics.ListAPIView):
+#     serializer_class = MessageSerializer
+#
+#     def get_queryset(self):
+#         sender_id = self.kwargs['sender_id']
+#         receiver_id = self.kwargs['receiver_id']
+#
+#         messages = ChatMessage.objects.filter(
+#            Q(sender_id=sender_id, receiver_id=receiver_id) or
+#             Q(sender_id=receiver_id, receiver_id=sender_id)
+#         ).order_by("id")
+#         return messages
+#
+# class SendMessage(generics.CreateAPIView):
+#     serializer_class = MessageSerializer
 
 class ProfileDetail(generics.RetrieveAPIView):
     serializer_class = ProfileSerializer
@@ -254,6 +255,22 @@ def toggle_verify_user(request, user_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Profile.DoesNotExist:
         return Response({"error": "User profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+# ////////////////////////////////////////
+class ChatMessageViewSet(viewsets.ModelViewSet):
+    queryset = ChatMessage.objects.all()
+    serializer_class = ChatMessageSerializer
+    # permission_classes = [IsAuthenticated]  # Ensure that only authenticated users can send messages
+
+    def perform_create(self, serializer):
+        sender = self.request.user  # The authenticated user is the sender
+        receiver_id = self.request.data.get('receiver')  # Get the receiver ID from the request data
+        serializer.save(sender=sender, receiver_id=receiver_id)
+
+
+
 
 
 

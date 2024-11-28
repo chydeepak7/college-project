@@ -2,8 +2,12 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import *
+
+router = DefaultRouter()
+router.register(r'chat-messages', ChatMessageViewSet, basename='chatmessage')
 
 
 urlpatterns = [
@@ -22,9 +26,11 @@ urlpatterns = [
     path('user/verify/', verify_user, name='verifyUser'),
 
     # Chat Messages
-    path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),
-    path('getMessages/<sender_id>/<receiver_id>/', GetMessages.as_view(), name='messages'),
-    path('sendMessages/', SendMessage.as_view(), name='sendMessages'),
+    path('', include(router.urls)),
+    # path('sendMessages/', SendMessage.as_view(), name='sendMessages'),
+    # path('myMessages/<user_id>/', MyInbox.as_view(), name='messageList'),
+    # path('getMessages/<sender_id>/<receiver_id>/', GetMessages.as_view(), name='messages'),
+    # path('sendMessages/', SendMessage.as_view(), name='sendMessages'),
     
     # Get Profile
     path('profile/<int:pk>/', ProfileDetail.as_view(), name='profileDetail'),
