@@ -35,10 +35,10 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=15,default=None)
     userType = models.ForeignKey(UserType, on_delete=models.CASCADE, default=None) # 'Landlord' or 'Tenant'
     is_verified = models.BooleanField(default=False)
-    
+
     def __str__(self):
         return self.user.username
-    
+
 class ChatMessage(models.Model):
     user= models.ForeignKey(User,on_delete=models.CASCADE,related_name="user")
     sender=models.ForeignKey(User,on_delete=models.CASCADE,related_name="sender")
@@ -51,7 +51,7 @@ class ChatMessage(models.Model):
     class Meta:
         ordering = ['date']
         verbose_name_plural = "Message"
-    
+
     def __str__(self):
         return f"{self.sender} - {self.receiver}"
 
@@ -59,12 +59,12 @@ class ChatMessage(models.Model):
     def sender_profile(self):
         sender_profile = Profile.objects.get(user=self.sender)
         return sender_profile
-    
+
     @property
     def receiver_profile(self):
         receiver_profile = Profile.objects.get(user=self.receiver)
         return receiver_profile
-    
+
 
 
 class RegistrationDetails(models.Model):
@@ -95,6 +95,7 @@ class RoomDetails(models.Model):
     number_of_rooms = models.IntegerField()
     rent = models.IntegerField(default=0)
     bathroom = models.CharField(max_length=100,blank=True,null=True)
+    phoneNumber = models.IntegerField(null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.CharField(max_length=100)
