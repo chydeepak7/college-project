@@ -41,6 +41,7 @@ urlpatterns = [
     path('roomdetails/', room_details, name='roomDetails'),
     path('roomdetail/', room_detail, name='roomDetail'),
     path('addrooms/', add_rooms, name='addRoom'),
+    path('handle-rent/', handle_rent, name='handle_rent'),
 
 
     path('toggle-verify-user/<int:user_id>/', toggle_verify_user, name='toggle_verify_user'),

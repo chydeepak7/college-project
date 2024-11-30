@@ -6,6 +6,10 @@ from rest_framework.decorators import api_view ,permission_classes,parser_classe
 from rest_framework.response import Response
 from rest_framework import viewsets
 from .serializers import *
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from django.db.models import Subquery, OuterRef , Q
@@ -289,3 +293,56 @@ def get_chat_users(request):
     user_data = [{'id': user.id, 'name': user.username} for user in users]
 
     return Response(user_data)
+
+
+@api_view(['POST'])
+def handle_rent(request):
+    try:
+        # Print request data for debugging
+        print("Request Data:", request.data)
+
+        rent_id = request.data.get("rent_id")
+        rent_from = request.data.get("rent_from")
+        rent_to = request.data.get("rent_to")
+        rent = request.data.get("rent", False)
+
+        if not rent_id or not rent_from or not rent_to:
+            return Response(
+                {"success": False, "message": "Missing required fields."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        room = RoomDetails.objects.get(id=rent_id)
+        # room = RoomDetails.objects.get(id=4)
+        print(room,'hahaha')
+        data = {
+            'roomId': room.id,
+            'rent': rent,
+            'rent_from': rent_from,
+            'rent_to': rent_to,
+        }
+        print(room.id,'dafa')
+
+        serializer = RentedRoomsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print("Serializer Errors:", serializer.errors)
+            return Response(
+                {"success": False, "message": "Invalid data", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    except RoomDetails.DoesNotExist:
+        return Response(
+            {"success": False, "message": "Room not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Exception as e:
+        print("Error:", str(e))
+        return Response(
+            {"success": False, "message": "An error occurred on the server."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+

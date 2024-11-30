@@ -98,4 +98,11 @@ class RoomDetails(models.Model):
     def __str__(self):
         return self.address
 
+class RentedRooms(models.Model):
+    roomId = models.OneToOneField(RoomDetails, on_delete=models.CASCADE,null=True,blank=True)
+    rent = models.BooleanField(default=False,null=True,blank=True)
+    rent_from = models.DateField(null=True,blank=True)
+    rent_to = models.DateField(null=True,blank=True)
 
+    def __str__(self):
+        return str(self.roomId)
