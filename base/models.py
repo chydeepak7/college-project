@@ -94,6 +94,9 @@ class RoomDetails(models.Model):
     image1 = models.ImageField(upload_to="images/rooms/", blank=True, null=True)
     image2 = models.ImageField(upload_to="images/rooms/", blank=True, null=True)
     image3 = models.ImageField(upload_to="images/rooms/", blank=True, null=True)
+    rented = models.BooleanField(default=False)
+    rent_from = models.DateField(null=True, blank=True)
+    rent_to = models.DateField(null=True, blank=True)
     other_details = models.CharField(max_length=500,blank=True,null=True)
     def __str__(self):
         return self.address

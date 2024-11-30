@@ -322,6 +322,11 @@ def handle_rent(request):
             'rent_to': rent_to,
         }
         print(room.id,'dafa')
+        room.rented = True
+        room.rent_from = rent_from
+        room.rent_to = rent_to
+        room.save()
+
 
         serializer = RentedRoomsSerializer(data=data)
         if serializer.is_valid():
