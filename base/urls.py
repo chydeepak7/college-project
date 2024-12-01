@@ -48,5 +48,13 @@ urlpatterns = [
 
 
 
+
+
+
+
+    # path('payment/esewa/<int:o_id>', EsewaRequestAPIView.as_view()),
+
+
+
 ]
 
