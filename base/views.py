@@ -227,8 +227,13 @@ def add_rooms(request):
     data = {
         'number_of_rooms': float(request.data.get('number_of_rooms')),
         'rent': float(request.data.get('rent')),
+        'carpetArea': float(request.data.get('carpetArea')),
         'phoneNumber': int(request.data.get('phoneNumber')),
+        'bhk': int(request.data.get('bhk')),
+        'floorNo': int(request.data.get('floorNo')),
+        'houseAge': int(request.data.get('houseAge')),
         'bathroom': request.data.get('bathroom'),
+        'roomFlat': request.data.get('roomFlat'),
         'address': request.data.get('address'),
         'latitude': float(request.data.get('longitude')),
         'longitude': float(request.data.get('latitude')),
@@ -238,6 +243,7 @@ def add_rooms(request):
         'image3': request.data.get('image3'),
         'user': user.id  # Add the user ID
     }
+    print(data)
     serializer = RoomDetailsSerializer(data=data)
     if serializer.is_valid():
         serializer.save(user=user)  # Automatically associate the `user` field
