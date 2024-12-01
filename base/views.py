@@ -234,6 +234,7 @@ def add_rooms(request):
         'houseAge': int(request.data.get('houseAge')),
         'bathroom': request.data.get('bathroom'),
         'roomFlat': request.data.get('roomFlat'),
+        'other_details': request.data.get('otherDetails'),
         'address': request.data.get('address'),
         'latitude': float(request.data.get('longitude')),
         'longitude': float(request.data.get('latitude')),
