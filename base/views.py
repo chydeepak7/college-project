@@ -227,7 +227,7 @@ def add_rooms(request):
     data = {
         'number_of_rooms': float(request.data.get('number_of_rooms')),
         'rent': float(request.data.get('rent')),
-        'phoneNumber': float(request.data.get('phoneNumber')),
+        'phoneNumber': int(request.data.get('phoneNumber')),
         'bathroom': request.data.get('bathroom'),
         'address': request.data.get('address'),
         'latitude': float(request.data.get('longitude')),

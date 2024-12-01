@@ -86,7 +86,7 @@ class RoomDetails(models.Model):
     number_of_rooms = models.IntegerField()
     rent = models.IntegerField(default=0)
     bathroom = models.CharField(max_length=100,blank=True,null=True)
-    phoneNumber = models.IntegerField(max_length=10,null=True, blank=True)
+    phoneNumber = models.CharField(max_length=15,null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.TextField(null=True,blank=True)
