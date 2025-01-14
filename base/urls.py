@@ -43,6 +43,10 @@ urlpatterns = [
     path('addrooms/', add_rooms, name='addRoom'),
     path('handle-rent/', handle_rent, name='handle_rent'),
 
+    # Payment Verify
+    path('paymentverify/', create_payment, name='create_payment'),
+
+
 
     path('toggle-verify-user/<int:user_id>/', toggle_verify_user, name='toggle_verify_user'),
 

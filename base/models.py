@@ -114,3 +114,24 @@ class RentedRooms(models.Model):
 
     def __str__(self):
         return str(self.roomId)
+
+
+class Payment(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate payment with a user
+    room = models.ForeignKey(RoomDetails, on_delete=models.CASCADE)
+    transaction_uuid = models.CharField(max_length=255, unique=True)  # Unique ID from payment gateway
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Amount paid
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')  # Payment status
+    created_at = models.DateTimeField(auto_now_add=True)  # When payment was created
+    updated_at = models.DateTimeField(auto_now=True)  # When payment was last updated
+
+    def __str__(self):
+        return f"Payment {self.transaction_uuid} - {self.status}"
+
