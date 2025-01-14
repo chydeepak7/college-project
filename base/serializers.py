@@ -152,7 +152,7 @@ class RentedRoomsSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['id', 'user', 'room', 'transaction_uuid', 'amount', 'status']
+        fields = '__all__'
 
 
 

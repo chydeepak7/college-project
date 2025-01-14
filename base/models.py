@@ -133,5 +133,5 @@ class Payment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)  # When payment was last updated
 
     def __str__(self):
-        return f"Payment {self.transaction_uuid} - {self.status}"
+        return f"Payment {self.transaction_uuid}"
 

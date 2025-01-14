@@ -363,14 +363,11 @@ def handle_rent(request):
 
 @api_view(['POST'])
 def create_payment(request):
-    """
-    Handles payment creation from frontend POST requests.
-    """
     user = request.user  # Get the logged-in user
     rent_id = request.data.get("rent_id")
     total_amount = request.data.get("total_amount")
     transaction_uuid = request.data.get("transaction_uuid")
-    print('payment',request.data,user)
+    print('payment',request.data,user,rent_id,total_amount,transaction_uuid)
 
     try:
         # Validate and fetch the related RoomDetails object
