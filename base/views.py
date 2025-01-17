@@ -211,6 +211,16 @@ def room_details(request):
     serializer = RoomDetailsSerializer(rooms, many=True)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def payment_history(request):
+    rooms = Payment.objects.all()
+    serializer = PaymentSerializer(rooms, many=True)
+    return Response(serializer.data)
+
+
+
+
 @api_view(['GET'])
 def room_detail(request):
     user = request.user

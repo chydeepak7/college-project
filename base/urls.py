@@ -45,6 +45,7 @@ urlpatterns = [
 
     # Payment Verify
     path('paymentverify/', create_payment, name='create_payment'),
+    path('paymenthistory/', payment_history, name='payment_history'),
 
 
 
