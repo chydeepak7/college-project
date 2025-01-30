@@ -41,6 +41,8 @@ urlpatterns = [
     path('roomdetails/', room_details, name='roomDetails'),
     path('roomdetail/', room_detail, name='roomDetail'),
     path('addrooms/', add_rooms, name='addRoom'),
+    path('removerooms/<int:room_id>/', remove_room, name='removeRoom'),
+    path('removebookedroom/<int:room_id>/', remove_booked_room, name='removebookedroom'),
     path('handle-rent/', handle_rent, name='handle_rent'),
 
     # Payment Verify
