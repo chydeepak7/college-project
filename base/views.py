@@ -401,3 +401,44 @@ def create_payment(request):
         return Response({"message": "Payment created successfully.", "payment": serializer.data}, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def remove_room(request, room_id):
+    """
+    Remove a room from the system if the requesting user is the owner.
+    """
+    try:
+        room = RoomDetails.objects.get(id=room_id, user=request.user)
+        room.delete()
+        return Response({"success": True, "message": "Room removed successfully."}, status=status.HTTP_200_OK)
+    except RoomDetails.DoesNotExist:
+        return Response({"success": False, "message": "Room not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def remove_booked_room(request, room_id):
+    """
+    Remove a booked room and update its rental status.
+    """
+    try:
+        booked_room = RentedRooms.objects.get(roomId=room_id)
+        room = RoomDetails.objects.get(id=room_id)
+
+        if booked_room:
+            booked_room.delete()
+            room.rented = False
+            room.rent_from = None
+            room.rent_to = None
+            room.save()
+            return Response({"success": True, "message": "Booked room removed successfully."}, status=status.HTTP_200_OK)
+
+        return Response({"success": False, "message": "No booking found for this room."}, status=status.HTTP_404_NOT_FOUND)
+
+    except RentedRooms.DoesNotExist:
+        return Response({"success": False, "message": "Booked room not found."}, status=status.HTTP_404_NOT_FOUND)
+    except RoomDetails.DoesNotExist:
+        return Response({"success": False, "message": "Room not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"success": False, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
